@@ -32,7 +32,7 @@ def color_changed(new_intval):
     # Controller updates the view by pulling data from model
     editor.insert(Tkinter.END, '#' + \
                                hexstring(red_intvar) + \
-                               hexstring(green_intvar) + '00\n')
+                               hexstring(green_intvar) + '\00')
     editor.see(Tkinter.END) # scroll the Text window to see the new bottom line
             
 # Instantiate and place sliders
@@ -56,7 +56,7 @@ editor = Tkinter.Text(root, width=10)
 editor.grid(column=2, row=0, rowspan=3)
 
 canvas = Tkinter.Canvas(root, width=300, height=300, background='#FFFFFF')
-canvas.grid(row=1, rowspan=2, column=1)
+canvas.grid(row=0, rowspan=3, column=1)
 ######
 # Function to convert IntVar data from Scale widget to two hex digits as string
 # for a Canvas widget color argument
@@ -77,10 +77,12 @@ def hexstring(slider_intvar):
     # Ensure two digits of hexadecimal:
     if len(slider_hex_digits)==1:
         slider_hex_digits = '0' + slider_hex_digits 
-    return slider_hex_digits
-    #WON'T DRAW THE CIRCLE -------> PLS HELP
-    circle = canvas.create_oval(0, 0, 300, 300, outline='#000000', fill=slider_hex)
-    circle.grid(row=0, column=1, rowspan=2)
+    if len(slider_hex_digits) != 6:
+        slider_hex_digits += '0'*(6 - len(slider_hex_digits))
+    visual = canvas.create_oval(0, 0, 300, 300,
+                                outline = '#000000', fill = '#' + slider_hex_digits)
+    visual.grid(row=0, cloumn = 1, rowspan=3)
+    print slider_hex_digits
 
 #######
 # Event Loop
